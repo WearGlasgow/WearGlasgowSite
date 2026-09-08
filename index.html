@@ -16,7 +16,11 @@
       <a class="brand" href="./" aria-label="Wear Glasgow home">
         <img src="images/WEAR%20GLASGOW%20LOGO%20WHITE.jpg" alt="Wear Glasgow" width="160" height="160">
       </a>
-      <nav aria-label="Main navigation">
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-navigation">
+        <span class="menu-toggle-label">Menu</span>
+        <span class="menu-toggle-icon" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
+      <nav id="site-navigation" aria-label="Main navigation">
         <a href="#services">Services</a>
         <a href="#about">About the studio</a>
         <a href="#contact">Contact</a>
@@ -129,10 +133,12 @@
         </form>
       </section>
     </main>
-    <footer class="site-footer wrap">
-      <p>Wear Glasgow</p>
-      <p>Garment development &amp; production support</p>
-      <a href="#main">Back to top <span aria-hidden="true">&#8593;</span></a>
+    <footer class="site-footer">
+      <div class="footer-inner wrap">
+        <p class="footer-name">Wear Glasgow</p>
+        <p class="footer-note">Garment development &amp; production support &middot; Glasgow</p>
+        <a class="footer-top" href="#main">Back to top <span aria-hidden="true">&#8593;</span></a>
+      </div>
     </footer>
     <script src="js/contact-config.js" defer></script>
     <script src="js/main.js" defer></script>

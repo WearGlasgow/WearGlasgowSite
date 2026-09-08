@@ -1,5 +1,28 @@
-﻿"use strict";
+"use strict";
 (() => {
+  const menuToggle = document.querySelector(".menu-toggle");
+  const navigation = document.getElementById("site-navigation");
+  if (menuToggle && navigation) {
+    const closeMenu = () => {
+      menuToggle.setAttribute("aria-expanded", "false");
+      menuToggle.querySelector(".menu-toggle-label").textContent = "Menu";
+    };
+    menuToggle.addEventListener("click", () => {
+      const opening = menuToggle.getAttribute("aria-expanded") !== "true";
+      menuToggle.setAttribute("aria-expanded", String(opening));
+      menuToggle.querySelector(".menu-toggle-label").textContent = opening ? "Close" : "Menu";
+    });
+    navigation.addEventListener("click", (event) => {
+      if (event.target.closest("a")) closeMenu();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && menuToggle.getAttribute("aria-expanded") === "true") {
+        closeMenu();
+        menuToggle.focus();
+      }
+    });
+  }
+
   const form = document.getElementById("contact-form");
   if (!form) return;
   const button = form.querySelector("button[type=submit]");
