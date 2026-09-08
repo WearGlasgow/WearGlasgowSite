@@ -1,0 +1,21 @@
+{
+    "name":  "wearglasgow-contact-functions",
+    "private":  true,
+    "version":  "1.0.0",
+    "main":  "index.js",
+    "engines":  {
+                    "node":  "22"
+                },
+    "scripts":  {
+                    "test":  "node --test *.test.js",
+                    "check":  "node --check index.js \u0026\u0026 node --check contact.js"
+                },
+    "dependencies":  {
+                         "firebase-admin":  "14.3.0",
+                         "firebase-functions":  "7.3.2",
+                         "nodemailer":  "10.0.1"
+                     },
+    "overrides":  {
+                      "uuid":  "^11.1.1"
+                  }
+}

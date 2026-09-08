@@ -1,0 +1,10 @@
+﻿# Keep backend code and local setup instructions out of the GitHub Pages site.
+exclude:
+  - functions
+  - scripts
+  - scss
+  - CONTACT-SETUP.md
+  - firebase.json
+  - firestore.rules
+  - firebase-debug.log
+  - node_modules

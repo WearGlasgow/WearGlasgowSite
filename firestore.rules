@@ -1,0 +1,68 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        (
+          request.auth.token.keys().hasAny(['admin']) &&
+          request.auth.token.admin == true
+        )
+      );
+    }
+    function ownsBooking() {
+      return signedIn() && resource.data.userId == request.auth.uid;
+    }
+    function validBooking() {
+      return request.resource.data.keys().hasAll(['title', 'roomId', 'date', 'startAt', 'endAt', 'guests', 'userId', 'status'])
+        && request.resource.data.title is string
+        && request.resource.data.title.size() > 0
+        && request.resource.data.title.size() <= 80
+        && request.resource.data.roomId is string
+        && request.resource.data.date is string
+        && request.resource.data.startAt is timestamp
+        && request.resource.data.endAt is timestamp
+        && request.resource.data.endAt > request.resource.data.startAt
+        && request.resource.data.guests is int
+        && request.resource.data.guests > 0
+        && request.resource.data.guests <= 100
+        && request.resource.data.userId is string
+        && request.resource.data.status in ['pending', 'approved', 'rejected'];
+    }
+
+    match /admins/{userId} {
+      allow read: if signedIn() && (request.auth.uid == userId || isAdmin());
+      allow write: if false;
+    }
+
+    match /rooms/{roomId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /bookings/{bookingId} {
+      // Calendar availability is public; all writes remain authenticated.
+      allow read: if true;
+      allow create: if signedIn()
+        && validBooking()
+        && request.resource.data.userId == request.auth.uid
+        && (
+          (isAdmin() && request.resource.data.status == 'approved') ||
+          (!isAdmin() && request.resource.data.status == 'pending')
+        );
+      allow update: if validBooking()
+        && request.resource.data.userId == resource.data.userId
+        && (
+          isAdmin() ||
+          (
+            ownsBooking() && (
+              (!resource.data.keys().hasAny(['status']) && request.resource.data.status == 'approved') ||
+              (resource.data.keys().hasAny(['status']) && request.resource.data.status == resource.data.status)
+            )
+          )
+        );
+      allow delete: if ownsBooking() || isAdmin();
+    }
+  }
+}
